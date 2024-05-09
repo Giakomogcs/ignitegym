@@ -1212,6 +1212,11 @@
     "@babel/helper-validator-identifier" "^7.24.5"
     to-fast-properties "^2.0.0"
 
+"@expo-google-fonts/roboto@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/@expo-google-fonts/roboto/-/roboto-0.2.3.tgz"
+  integrity sha512-PF6S//ZYWeXfpYTwvY2oEe0d5RnqwR5KMsGjuTgg6y9p/CPK/IkWL+wsbkzjfd+Jck1Q1pRlWOoe5uz42sQFRg==
+
 "@expo/bunyan@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@expo/bunyan/-/bunyan-4.0.0.tgz"
