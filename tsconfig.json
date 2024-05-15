@@ -5,7 +5,7 @@
     "baseUrl": "./",
     "paths": {
       "@dtos/*": ["src/dtos/*"],
-      "@assets/*": ["./src/assets/*"],
+      "@assets/*": ["./assets/*"],
       "@components/*": ["./src/components/*"],
       "@screens/*": ["./src/screens/*"],
       "@storage/*": ["./src/storage/*"],
