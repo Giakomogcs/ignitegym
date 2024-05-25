@@ -12,6 +12,7 @@ import {
 } from "@expo-google-fonts/roboto";
 
 import { Routes } from "./src/routes";
+import { Home } from "@screens/Home";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
