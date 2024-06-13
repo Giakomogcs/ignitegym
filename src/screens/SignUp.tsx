@@ -67,11 +67,14 @@ export function SignUp() {
             name="name"
             rules={{ required: "Informe o nome" }}
             render={({ field: { onChange, value } }) => (
-              <Input placeholder="Nome" onChangeText={onChange} value={value} />
+              <Input
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.name?.message}
+              />
             )}
           />
-
-          <Text color={"white"}>{errors.name?.message}</Text>
 
           <Controller
             control={control}
@@ -90,21 +93,22 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
 
-          <Text color={"white"}>{errors.email?.message}</Text>
-
           <Controller
             control={control}
             name="password"
+            rules={{ required: "Digite a senha" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Senha"
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.password?.message}
               />
             )}
           />
@@ -112,6 +116,7 @@ export function SignUp() {
           <Controller
             control={control}
             name="password_confirm"
+            rules={{ required: "A senha não corresponde" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Confirme a senha"
@@ -120,6 +125,7 @@ export function SignUp() {
                 value={value}
                 onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType="send"
+                errorMessage={errors.password_confirm?.message}
               />
             )}
           />
