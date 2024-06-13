@@ -9,15 +9,28 @@ import BackgroundImg from "@assets/background.png";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+};
+
 export function SignUp() {
   const navigation = useNavigation();
-  const { control } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>();
 
   function handleGoBack() {
     navigation.goBack();
   }
 
-  function handleSignUp() {}
+  function handleSignUp(data: any) {
+    console.log(data);
+  }
 
   return (
     <ScrollView
@@ -52,14 +65,24 @@ export function SignUp() {
           <Controller
             control={control}
             name="name"
+            rules={{ required: "Informe o nome" }}
             render={({ field: { onChange, value } }) => (
               <Input placeholder="Nome" onChangeText={onChange} value={value} />
             )}
           />
 
+          <Text color={"white"}>{errors.name?.message}</Text>
+
           <Controller
             control={control}
             name="email"
+            rules={{
+              required: "Informe o email",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "E-mail inválido",
+              },
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="E-mail"
@@ -70,6 +93,8 @@ export function SignUp() {
               />
             )}
           />
+
+          <Text color={"white"}>{errors.email?.message}</Text>
 
           <Controller
             control={control}
@@ -93,11 +118,16 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType="send"
               />
             )}
           />
 
-          <Button title="Criar e acessar" onPress={handleSignUp} />
+          <Button
+            title="Criar e acessar"
+            onPress={handleSubmit(handleSignUp)}
+          />
         </Center>
 
         <Center mt={24} px={10}>
