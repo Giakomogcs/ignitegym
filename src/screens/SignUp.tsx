@@ -2,6 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
 
 import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import LogoSvg from "@assets/logo.svg";
 import BackgroundImg from "@assets/background.png";
@@ -16,13 +18,28 @@ type FormDataProps = {
   password_confirm: string;
 };
 
+const signUpSchema = yup.object({
+  name: yup.string().required("Informe o nome."),
+  email: yup.string().required("Informe o email.").email("E-mail inválido."),
+  password: yup
+    .string()
+    .required("Digite a senha.")
+    .min(6, "A senha deve ter no minimo 6 digitos."),
+  password_confirm: yup
+    .string()
+    .required("Confirme a senha.")
+    .oneOf([yup.ref("password")], "A comfirmação da senha não confere"),
+});
+
 export function SignUp() {
   const navigation = useNavigation();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataProps>();
+  } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema),
+  });
 
   function handleGoBack() {
     navigation.goBack();
@@ -65,7 +82,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="name"
-            rules={{ required: "Informe o nome" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Nome"
@@ -79,13 +95,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="email"
-            rules={{
-              required: "Informe o email",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "E-mail inválido",
-              },
-            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="E-mail"
@@ -101,7 +110,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="password"
-            rules={{ required: "Digite a senha" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Senha"
@@ -116,7 +124,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="password_confirm"
-            rules={{ required: "A senha não corresponde" }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Confirme a senha"
@@ -136,7 +143,7 @@ export function SignUp() {
           />
         </Center>
 
-        <Center mt={24} px={10}>
+        <Center mt={16} px={10}>
           <Button
             title="Voltar para o login"
             variant="outline"
