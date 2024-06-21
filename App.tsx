@@ -13,7 +13,7 @@ import {
 
 import { Routes } from "./src/routes";
 import { Home } from "@screens/Home";
-import { AuthContext } from "@contexts/AuthContext";
+import { AuthContext, AuthContextProvider } from "@contexts/AuthContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -28,18 +28,9 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <AuthContext.Provider
-        value={{
-          user: {
-            id: "1",
-            name: "Rodrigo",
-            email: "rodrigo@gmail.com",
-            avatar: "rodrigo.png",
-          },
-        }}
-      >
+      <AuthContextProvider>
         {fontsLoaded ? <Routes /> : <Loading />}
-      </AuthContext.Provider>
+      </AuthContextProvider>
     </NativeBaseProvider>
   );
 }
