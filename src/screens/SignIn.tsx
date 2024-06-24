@@ -13,20 +13,27 @@ import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { useAuth } from "@hooks/useAuth";
+
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import LogoSvg from "@assets/logo.svg";
 import BackgroundImg from "@assets/background.png";
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { AppError } from "@utils/AppError";
 
-type FormDataProps = {
+type FormData = {
   email: string;
   password: string;
 };
 
 export function SignIn() {
+  const { signIn } = useAuth();
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  const toast = useToast();
 
   function handleNewAccount() {
     navigation.navigate("signUp");
@@ -41,12 +48,26 @@ export function SignIn() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataProps>({
+  } = useForm<FormData>({
     resolver: yupResolver(signInSchema),
   });
 
-  async function handleSignIn({ email, password }: FormDataProps) {
-    console.log(email, password);
+  async function handleSignIn({ email, password }: FormData) {
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError
+        ? error.message
+        : "Não foi possível entrar. Tente novamente mais tarde";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
   }
 
   return (
