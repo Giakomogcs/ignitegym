@@ -81,7 +81,7 @@ export function Exercise() {
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
-        : "Não foi possível regidtrar o exercicio.";
+        : "Não foi possível registrar o exercicio.";
 
       toast.show({
         title,
