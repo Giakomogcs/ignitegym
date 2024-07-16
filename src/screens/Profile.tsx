@@ -13,14 +13,45 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { Alert, TouchableOpacity } from "react-native";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import * as yup from "yup";
+
+import { Controller, useForm } from "react-hook-form";
 import { FileInfo } from "expo-file-system";
+import { useAuth } from "@hooks/useAuth";
 
 const PHOTO_SIZE = 33;
 
+type FormDataProps = {
+  name: string;
+  email?: string;
+  password?: string;
+  old_password?: string;
+  confirm_password?: string;
+};
+
+const profileSchema = yup.object({
+  name: yup.string().required("Informe o nome."),
+});
+
 export function Profile() {
+  const { user } = useAuth();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+    },
+    resolver: yupResolver(profileSchema),
+  });
+
   const [photoIsLoading, setPhotoIsLoagind] = useState(false);
   const [userPhoto, setUserPhoto] = useState(
     "https://github.com/Giakomogcs.png"
@@ -64,6 +95,10 @@ export function Profile() {
     }
   }
 
+  async function handleUserPhotoUpdate(data: FormDataProps) {
+    console.log(data);
+  }
+
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
@@ -98,8 +133,34 @@ export function Profile() {
             </Text>
           </TouchableOpacity>
 
-          <Input bg={"gray.600"} placeholder="Nome" />
-          <Input bg={"gray.600"} placeholder="E-mail" isDisabled />
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { value, onChange } }) => (
+              <Input
+                bg={"gray.600"}
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.name?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { value, onChange } }) => (
+              <Input
+                bg={"gray.600"}
+                placeholder="E-mail"
+                isDisabled
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.email?.message}
+              />
+            )}
+          />
 
           <Heading
             color={"gray.200"}
@@ -111,15 +172,50 @@ export function Profile() {
           >
             Alterar senha
           </Heading>
-          <Input bg={"gray.600"} placeholder="Senha antiga" secureTextEntry />
-          <Input bg={"gray.600"} placeholder="Nova senha" secureTextEntry />
-          <Input
-            bg={"gray.600"}
-            placeholder="Confirme a nova senha"
-            secureTextEntry
+
+          <Controller
+            control={control}
+            name="old_password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg={"gray.600"}
+                placeholder="Senha antiga"
+                secureTextEntry
+              />
+            )}
           />
 
-          <Button title="Atualizar" mt={4} />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg={"gray.600"}
+                placeholder="Nova senha"
+                secureTextEntry
+                errorMessage={errors.password?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="confirm_password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg={"gray.600"}
+                placeholder="Confirme a nova senha"
+                secureTextEntry
+                errorMessage={errors.confirm_password?.message}
+              />
+            )}
+          />
+
+          <Button
+            title="Atualizar"
+            mt={4}
+            onPress={handleSubmit(handleUserPhotoUpdate)}
+          />
         </Center>
       </ScrollView>
     </VStack>
