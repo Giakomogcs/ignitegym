@@ -64,7 +64,7 @@ export function Profile() {
     "https://github.com/Giakomogcs.png"
   );
 
-  const { user } = useAuth();
+  const { user, updateUserProfile } = useAuth();
 
   const {
     control,
@@ -119,7 +119,12 @@ export function Profile() {
   async function handleUserPhotoUpdate(data: FormDataProps) {
     try {
       setIsUpdating(true);
+      const userUpdated = user;
+      userUpdated.name = data.name;
+
       await api.put("/users", data);
+      updateUserProfile(userUpdated);
+
       toast.show({
         title: "Perfil atualizado com sucesso!",
         placement: "top",
